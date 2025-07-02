@@ -112,6 +112,15 @@ public class Properties extends HashMap<String, Object> {
 
     public class PropertiesConverter implements Converter {
 
+        @Nullable
+        @Override
+        public Object convert(@Nullable Object value, @Nonnull String property, @Nonnull Class<?> propertyType, boolean assignable) {
+            if (assignable) {
+                return value;
+            }
+            return null;
+        }
+
         @Override
         public Object provide(@Nullable Object source, @Nonnull String property, @Nonnull Class<?> propertyType) {
             var value = Properties.this.get(property);

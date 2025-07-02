@@ -23,7 +23,7 @@ public class ToRecordCopierTest extends Assertions {
         var a = new A(
                 "a", 1, List.of(1), List.of("d"), List.of(true), 1
         );
-        var b = Copiers.copy(a, B.class);
+        var b = Copiers.copy(a, B.class, Converter.NULL);
 
         System.out.println(a);
         System.out.println(b);

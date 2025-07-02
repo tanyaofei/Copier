@@ -86,6 +86,7 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
                     e.load_arg(2);
                     e.load_local(source);
                     e.invoke_virtual(sourceType, sourceProp.readMethodSignature());
+                    e.box(sourceProp.propertyAsmType());
                     e.push(targetProp.name());
                     e.visitLdcInsn(this.getBoxType(targetProp.propertyAsmType()));
                     e.push(assignable(sourceProp.type(), targetProp.type()));

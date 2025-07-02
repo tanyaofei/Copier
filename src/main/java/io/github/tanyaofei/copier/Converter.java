@@ -7,9 +7,14 @@ import jakarta.annotation.Nullable;
  * @author tanyaofei
  * @since 2025/7/1
  **/
+@FunctionalInterface
 public interface Converter {
 
-    Converter NULL = new Converter() {
+    Converter NULL = (value, property, type, assignable) -> {
+        if (assignable) {
+            return value;
+        }
+        return null;
     };
 
     /**
@@ -43,13 +48,8 @@ public interface Converter {
      * @param assignable   if the value from the source object can assignable to the target property
      * @return converted value
      */
-    default Object convert(@Nullable Object value, @Nonnull String property, @Nonnull Class<?> propertyType, boolean assignable) {
-        if (assignable) {
-            return value;
-        }
-
-        return null;
-    }
+    @Nullable
+    Object convert(@Nullable Object value, @Nonnull String property, @Nonnull Class<?> propertyType, boolean assignable);
 
     /**
      * The copier invokes this method for each property that cannot be found in the target object by name,

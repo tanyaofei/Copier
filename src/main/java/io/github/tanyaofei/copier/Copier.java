@@ -1,7 +1,6 @@
 package io.github.tanyaofei.copier;
 
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -20,7 +19,7 @@ public abstract class Copier {
      * @param converter converter
      * @return target object
      */
-    public Object copy(@Nonnull Object source, @Nullable Converter converter) {
+    public Object copy(@Nonnull Object source, Converter converter) {
         throw new UnsupportedOperationException("copy");
     }
 
@@ -31,7 +30,7 @@ public abstract class Copier {
      * @param target    target object
      * @param converter converter
      */
-    public void copyInto(@Nonnull Object source, @Nonnull Object target, @Nullable Converter converter) {
+    public void copyInto(@Nonnull Object source, @Nonnull Object target, Converter converter) {
         throw new UnsupportedOperationException("copyInto");
     }
 
