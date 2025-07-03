@@ -35,6 +35,7 @@
 
 + 如果 Target 是一个 **非** record 的对象, 需要提供无参构造函数
 + 如果 Target 是一个 record 对象, 不支持 `Copiers.copyInto()` 方法
++ 一旦使用了 `Converter` 或者 `Properties`, 所有字段都会调用 `Converter.provide()` 或者 `Converter.convert()` 并且设置值, 意味着不能保留无参构造函数的默认值
 
 ## 简单使用
 

@@ -21,7 +21,7 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
     }
 
     @Override
-    protected void generateCopyMethod(ClassEmitter ce) {
+    protected void generateCopyMethod(@Nonnull ClassEmitter ce) {
         var e = ce.begin_method(Constants.ACC_PUBLIC | Constants.ACC_FINAL, Constants.SIGNATURE_COPIER$copy, null);
 
         var thisType = ce.getClassType();
@@ -46,7 +46,7 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
 
     @Override
     @SuppressWarnings("DuplicatedCode")
-    protected void generateCopyIntoMethod(ClassEmitter ce) {
+    protected void generateCopyIntoMethod(@Nonnull ClassEmitter ce) {
         var e = ce.begin_method(Constants.ACC_PUBLIC | Constants.ACC_FINAL, Constants.SIGNATURE_COPIER$copyInto, null);
 
         var sourceType = Type.getType(this.source);
@@ -89,11 +89,11 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
                     e.box(sourceProp.propertyAsmType());
                     e.push(targetProp.name());
                     e.visitLdcInsn(this.getBoxType(targetProp.propertyAsmType()));
-                    e.push(assignable(sourceProp.type(), targetProp.type()));
+                    e.push(this.isAssignable(sourceProp.type(), targetProp.type()));
                     e.invoke_interface(Constants.TYPE_CONVERTER, Constants.SIGNATURE_CONVERTER$convert);
                     e.unbox_or_zero(targetProp.propertyAsmType());
                 } else {
-                    if (!assignable(sourceProp.type(), targetProp.type())) {
+                    if (!this.isAssignable(sourceProp.type(), targetProp.type())) {
                         continue;
                     }
                     e.load_local(target);

@@ -12,9 +12,8 @@ record CacheKey(
         boolean useConverter
 ) {
 
-    CacheKey(Class<?> source, Class<?> target, boolean useConverter) {
+    CacheKey(@Nonnull Class<?> source, @Nonnull Class<?> target, boolean useConverter) {
         this(source.getName(), target.getName(), useConverter);
     }
-
 
 }

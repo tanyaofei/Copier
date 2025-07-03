@@ -1,8 +1,10 @@
 package io.github.tanyaofei.copier;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
+ * Copier Base Exception
  * @author tanyaofei
  * @since 2025/7/1
  **/
@@ -12,15 +14,15 @@ public class CopierException extends RuntimeException {
         super();
     }
 
-    public CopierException(String message) {
+    public CopierException(@Nullable String message) {
         super(message);
     }
 
-    public CopierException(String message, Throwable cause) {
+    public CopierException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public CopierException(Throwable cause) {
+    public CopierException(@Nullable Throwable cause) {
         super(cause);
     }
 

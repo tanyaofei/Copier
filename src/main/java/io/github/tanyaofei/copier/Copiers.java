@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 对象拷贝工具
+ * Static copy tool
  *
  * @author tanyaofei
  * @since 2025/6/19
@@ -58,11 +58,11 @@ public abstract class Copiers {
      * @param <T>    source type
      * @return 目标
      */
-    @SuppressWarnings("unchecked")
     public static <T> T clone(@Nullable T source) {
         if (source == null) {
             return null;
         }
+        // noinspection unchecked
         return (T) copy(source, source.getClass());
     }
 
@@ -219,7 +219,6 @@ public abstract class Copiers {
      * @param <U>         target type
      * @return a collection of targets
      */
-    @SuppressWarnings("unchecked")
     public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable Converter converter, @Nonnull MethodHandles.Lookup lookup) {
         if (sources == null) {
             return null;
@@ -236,6 +235,7 @@ public abstract class Copiers {
                 if (copier == null) {
                     copier = getCopier(source.getClass(), targetClass, converter != null, lookup);
                 }
+                // noinspection unchecked
                 target = (U) copier.copy(source, converter);
             }
             targets.add(target);
@@ -259,10 +259,12 @@ public abstract class Copiers {
         return copier;
     }
 
+    @Nonnull
     private static Copier generateCopier(@Nonnull Class<?> sourceClass, @Nonnull Class<?> targetClass, boolean useConverter, @Nonnull MethodHandles.Lookup lookup) {
         return Copier.create(sourceClass, targetClass, useConverter, lookup);
     }
 
+    @Nonnull
     private static MethodHandles.Lookup getLookup(@Nonnull Class<?> clazz) {
         try {
             return MethodHandles.privateLookupIn(clazz, MethodHandles.lookup());

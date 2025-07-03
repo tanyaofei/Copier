@@ -8,5 +8,6 @@ module io.github.tanyaofei.copier {
     requires org.objectweb.asm;
     requires org.apache.commons.lang3;
     requires java.desktop;
+    requires jdk.jfr;
     exports io.github.tanyaofei.copier;
 }

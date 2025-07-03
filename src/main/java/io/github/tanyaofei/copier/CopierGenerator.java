@@ -29,6 +29,7 @@ abstract class CopierGenerator {
     private final static Set<String> RESERVED_CLASS_NAMES = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private final static ReferenceQueue<Class<?>> REFERENCE_QUEUE = new ReferenceQueue<>();
+
     final static HashMap<CacheKey, IdentifierWeakReference<CacheKey, Class<?>>> CACHE = new HashMap<>();
 
     static {
@@ -49,17 +50,21 @@ abstract class CopierGenerator {
         cleaner.start();
     }
 
+    @Nonnull
     protected final Class<?> source;
 
+    @Nonnull
     protected final Class<?> target;
 
     protected final boolean useConverter;
 
+    @Nonnull
     private final String classNamePrefix;
 
+    @Nonnull
     private final MethodHandles.Lookup lookup;
 
-    public CopierGenerator(Class<?> source, Class<?> target, boolean useConverter, MethodHandles.Lookup lookup) {
+    public CopierGenerator(@Nonnull Class<?> source, @Nonnull Class<?> target, boolean useConverter, @Nonnull MethodHandles.Lookup lookup) {
         this.source = source;
         this.target = target;
         this.useConverter = useConverter;
@@ -83,9 +88,9 @@ abstract class CopierGenerator {
         ce.end_class();
     }
 
-    protected abstract void generateCopyMethod(ClassEmitter ce);
+    protected abstract void generateCopyMethod(@Nonnull ClassEmitter ce);
 
-    protected abstract void generateCopyIntoMethod(ClassEmitter ce);
+    protected abstract void generateCopyIntoMethod(@Nonnull ClassEmitter ce);
 
     @Nonnull
     public Copier create() {
@@ -137,7 +142,7 @@ abstract class CopierGenerator {
     }
 
     @Nonnull
-    private static String generateClassNamePrefix(Class<?> source, Class<?> target) {
+    private static String generateClassNamePrefix(@Nonnull Class<?> source, @Nonnull Class<?> target) {
         var pkg = target.getPackageName();
         var name = new StringBuilder();
         if (!pkg.isEmpty()) {
@@ -149,11 +154,11 @@ abstract class CopierGenerator {
 
 
     @Nonnull
-    static String generateClassName(@Nonnull String prefix, @Nonnull Object key, @Nonnull NamingPolicy policy) {
+    private static String generateClassName(@Nonnull String prefix, @Nonnull Object key, @Nonnull NamingPolicy policy) {
         return policy.getName(prefix, key, RESERVED_CLASS_NAMES::add);
     }
 
-    protected boolean assignable(@Nonnull PropertyType source, @Nonnull PropertyType target) {
+    protected boolean isAssignable(@Nonnull PropertyType source, @Nonnull PropertyType target) {
         if (Collection.class.isAssignableFrom(source.type())) {
             return TypeUtils.isAssignable(source.genericType(), target.genericType());
         } else if (Optional.class == source.type()) {
@@ -177,8 +182,7 @@ abstract class CopierGenerator {
         };
     }
 
-
-    private static void writeClassFile(byte[] bytecode) {
+    private static void writeClassFile(@Nonnull byte[] bytecode) {
         var reader = new ClassReader(bytecode);
         var className = reader.getClassName();
 
@@ -186,13 +190,13 @@ abstract class CopierGenerator {
 
         var folder = new File(filepath).getParentFile();
         if (!folder.exists() && !folder.mkdirs()) {
-            throw new IllegalStateException("Failed to create debug location folder: " + folder.getPath());
+            throw new CopierException("Failed to create debug location folder: " + folder.getPath());
         }
 
         try (var out = new BufferedOutputStream(new FileOutputStream(filepath))) {
             out.write(bytecode);
         } catch (Exception e) {
-            throw new CopierException("Error write bytecode to disk", e);
+            throw new CopierException("Error dumping bytecode to disk", e);
         }
     }
 
