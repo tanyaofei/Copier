@@ -67,7 +67,7 @@ record Property(
         }
     }
 
-    private static Property[] forRecordReaders(@Nonnull Class<? extends Record> type) {
+    static Property[] forRecordReaders(@Nonnull Class<? extends Record> type) {
         var components = type.getRecordComponents();
         int size = components.length;
         var properties = new Property[size];
@@ -82,11 +82,11 @@ record Property(
         return properties;
     }
 
-    private static Property[] forRecordWriters(@Nonnull Class<? extends Record> type) {
-        return new Property[0];
+    static Property[] forRecordWriters(@Nonnull Class<? extends Record> type) {
+        throw new UnsupportedOperationException("record has no writers");
     }
 
-    private static Property[] forBeanReaders(@Nonnull Class<?> type) {
+    static Property[] forBeanReaders(@Nonnull Class<?> type) {
         var descriptors = ReflectUtils.getBeanGetters(type);
         int size = descriptors.length;
         var properties = new Property[size];
@@ -104,7 +104,7 @@ record Property(
         return properties;
     }
 
-    private static Property[] forBeanWriter(@Nonnull Class<?> type) {
+    static Property[] forBeanWriter(@Nonnull Class<?> type) {
         var descriptors = ReflectUtils.getBeanProperties(type);
         int size = descriptors.length;
         var properties = new ArrayList<Property>(size);
