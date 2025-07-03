@@ -67,7 +67,16 @@ record Property(
         }
     }
 
-    static Property[] forRecordReaders(@Nonnull Class<? extends Record> type) {
+    @SuppressWarnings("unchecked")
+    public static Property[] forClassConstructors(@Nonnull Class<?> type) {
+        if (!type.isRecord()) {
+            throw new UnsupportedOperationException("cannot find constructor properties for non-record class: " + type.getName());
+        }
+
+        return forRecordReaders((Class<? extends Record>) type);
+    }
+
+    private static Property[] forRecordReaders(@Nonnull Class<? extends Record> type) {
         var components = type.getRecordComponents();
         int size = components.length;
         var properties = new Property[size];
@@ -82,11 +91,11 @@ record Property(
         return properties;
     }
 
-    static Property[] forRecordWriters(@Nonnull Class<? extends Record> type) {
+    private static Property[] forRecordWriters(@Nonnull Class<? extends Record> type) {
         throw new UnsupportedOperationException("record has no writers");
     }
 
-    static Property[] forBeanReaders(@Nonnull Class<?> type) {
+    private static Property[] forBeanReaders(@Nonnull Class<?> type) {
         var descriptors = ReflectUtils.getBeanGetters(type);
         int size = descriptors.length;
         var properties = new Property[size];

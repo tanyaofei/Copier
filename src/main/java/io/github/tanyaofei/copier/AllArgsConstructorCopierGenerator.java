@@ -29,7 +29,7 @@ class AllArgsConstructorCopierGenerator extends CopierGenerator {
         var targetType = Type.getType(this.target);
 
         var sourceProps = Arrays.stream(Property.forClassReaders(this.source)).collect(Collectors.toMap(Property::name, Function.identity()));
-        var targetProps = Property.forClassReaders(this.target);
+        var targetProps = Property.forClassConstructors(this.target);
 
         var source = e.make_local();
         e.load_arg(0);
