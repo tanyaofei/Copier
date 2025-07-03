@@ -220,6 +220,7 @@ public abstract class Copiers {
      * @param <U>         target type
      * @return a collection of targets
      */
+    @SuppressWarnings("unchecked")
     public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable Converter converter, @Nonnull MethodHandles.Lookup lookup) {
         if (sources == null) {
             return null;
@@ -236,7 +237,7 @@ public abstract class Copiers {
                 if (copier == null) {
                     copier = getCopier(source.getClass(), targetClass, converter != null, lookup);
                 }
-                target = targetClass.cast(copier.copy(source, converter));
+                target = (U) copier.copy(source, converter);
             }
             targets.add(target);
         }
