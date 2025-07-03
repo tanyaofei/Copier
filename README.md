@@ -5,21 +5,26 @@
 + JDK 17+
 
 ## 如何安装
+
 ```xml
+
 <dependency>
     <groupId>io.github.tanyaofei</groupId>
     <artifactId>copier</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
+
 ## 特性
 
 1. 使用字节码技术生成拷贝工具, 相比反射拷贝性能更高
 2. 支持 JDK 14+ 的 Record 类, 同时也支持普通的 class
-3. 支持属性兼容拷贝, 如 `Integer => Number`, `List<Integer> => Collection<? extends Number>`
-4. 支持自定义转换器 `Converter`
-5. 生成出来的 Copier 对象和类是 `WeakReference`, 允许 GC 进行回收
-6. 支持 Lombok `@Accessor(chain=true)` 生成出来的带返回值的 setter 方法
+3. 支持子类拷贝至父类, 如 `Integer => Number`, `List<Integer> => Collection<? extends Number>`
+4. **不支持** `int => Integer` 等拆装箱拷贝
+5. **不支持** `int => long` 等隐式类型转换
+6. 支持自定义转换器 `Converter`
+7. 生成出来的 Copier 对象和类是 `WeakReference`, 允许 GC 进行回收
+8. 支持 Lombok `@Accessor(chain=true)` 生成出来的带返回值的 setter 方法
 
 ## 性能对比
 
