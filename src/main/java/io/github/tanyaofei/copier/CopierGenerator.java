@@ -40,8 +40,6 @@ abstract class CopierGenerator {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
-                } catch (Exception ignored) {
-
                 }
             }
         });

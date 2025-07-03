@@ -39,7 +39,7 @@ public abstract class Copier {
      *
      * @param sourceClass  source class
      * @param targetClass  target class
-     * @param useConverter if use converter
+     * @param useConverter if using converter
      * @param lookup       Lookup
      * @return Copier
      */

@@ -43,7 +43,6 @@ public abstract class Copiers {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
-                } catch (Exception e) {
                 }
             }
         });
