@@ -6,12 +6,12 @@ import net.sf.cglib.core.Signature;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 /**
- * @param name        属性名称
- * @param type        属性类型
- * @param readMethod  获取属性的方法
- * @param writeMethod 写入属性的方法
+ * @param name   属性名称
+ * @param type   属性类型
+ * @param method Getter/Setter
  * @author tanyaofei
  * @since 2025/6/19
  **/
@@ -24,10 +24,7 @@ record Property(
         PropertyType type,
 
         @Nonnull
-        Method readMethod,
-
-        // Record 没有
-        Method writeMethod
+        Method method
 
 
 ) {
@@ -44,30 +41,33 @@ record Property(
         return type.asmType();
     }
 
-    public @Nonnull Signature readMethodSignature() {
-        return new Signature(this.readMethod.getName(), Type.getReturnType(this.readMethod), new Type[0]);
+    public @Nonnull Signature signature() {
+        return new Signature(
+                this.method.getName(),
+                Type.getReturnType(this.method),
+                Type.getArgumentTypes(this.method)
+        );
     }
 
-    public @Nonnull Signature writeMethodSignature() {
-        if (this.writeMethod == null) {
-            throw new IllegalStateException("writeMethod is null");
-        }
-
-        return new Signature(this.writeMethod.getName(), Type.getReturnType(this.writeMethod), new Type[]{this.propertyAsmType()});
-    }
-
-    @Nonnull
     @SuppressWarnings("unchecked")
-    public static Property[] forClass(@Nonnull Class<?> type) {
+    public static Property[] forClassReaders(@Nonnull Class<?> type) {
         if (type.isRecord()) {
-            return forRecord((Class<? extends Record>) type);
+            return forRecordReaders((Class<? extends Record>) type);
         } else {
-            return forBean(type);
+            return forBeanReaders(type);
         }
     }
 
-    @Nonnull
-    private static Property[] forRecord(@Nonnull Class<? extends Record> type) {
+    @SuppressWarnings("unchecked")
+    public static Property[] forClassWriters(@Nonnull Class<?> type) {
+        if (type.isRecord()) {
+            return forRecordWriters((Class<? extends Record>) type);
+        } else {
+            return forBeanWriter(type);
+        }
+    }
+
+    private static Property[] forRecordReaders(@Nonnull Class<? extends Record> type) {
         var components = type.getRecordComponents();
         int size = components.length;
         var properties = new Property[size];
@@ -76,44 +76,77 @@ record Property(
             properties[i] = new Property(
                     component.getName(),
                     new PropertyType(component.getType(), component.getGenericType()),
-                    component.getAccessor(),
-                    null
+                    component.getAccessor()
             );
         }
         return properties;
     }
 
-    @Nonnull
-    private static Property[] forBean(@Nonnull Class<?> type) {
-        var descriptors = ReflectUtils.getBeanProperties(type);
+    private static Property[] forRecordWriters(@Nonnull Class<? extends Record> type) {
+        return new Property[0];
+    }
+
+    private static Property[] forBeanReaders(@Nonnull Class<?> type) {
+        var descriptors = ReflectUtils.getBeanGetters(type);
         int size = descriptors.length;
         var properties = new Property[size];
         for (int i = 0; i < size; i++) {
             var descriptor = descriptors[i];
-            var readMethod = descriptor.getReadMethod();
-            var writeMethod = descriptor.getWriteMethod();
+            var name = descriptor.getName();
+            var reader = descriptor.getReadMethod();
+            var genericType = reader.getGenericReturnType();
+            properties[i] = new Property(
+                    name,
+                    new PropertyType(descriptor.getPropertyType(), genericType),
+                    reader
+            );
+        }
+        return properties;
+    }
 
-            java.lang.reflect.Type genericType;
-            if (readMethod != null) {
-                genericType = readMethod.getGenericReturnType();
-            } else if (writeMethod != null) {
-                genericType = writeMethod.getGenericParameterTypes()[0];
-            } else {
+    private static Property[] forBeanWriter(@Nonnull Class<?> type) {
+        var descriptors = ReflectUtils.getBeanProperties(type);
+        int size = descriptors.length;
+        var properties = new ArrayList<Property>(size);
+        for (var descriptor : descriptors) {
+            var name = descriptor.getName();
+            var writer = descriptor.getWriteMethod();
+
+            if (writer == null) {
+                // lombok @Accessor(chain=true)
+                var writerName = "set" + name.substring(0, 1).toUpperCase() + (name.length() > 1 ? name.substring(1) : "");
+                try {
+                    writer = type.getMethod(writerName, descriptor.getPropertyType());
+                } catch (NoSuchMethodException ignore) {
+
+                }
+            }
+
+
+            if (writer == null) {
+                // java bean, uAge -> setuAge()
+                if (name.length() > 1 && Character.isLowerCase(name.charAt(0)) && Character.isUpperCase(name.charAt(1))) {
+                    var writerName = "set" + name;
+                    try {
+                        writer = type.getMethod(writerName, descriptor.getPropertyType());
+                    } catch (NoSuchMethodException ignore1) {
+
+                    }
+                }
+            }
+
+            if (writer == null) {
                 continue;
             }
 
-            try {
-                properties[i] = new Property(
-                        descriptor.getName(),
-                        new PropertyType(descriptor.getPropertyType(), genericType),
-                        descriptor.getReadMethod(),
-                        descriptor.getWriteMethod()
-                );
-            } catch (Exception e) {
-                throw new IllegalStateException("Error getting property descriptor: " + descriptor.getName(), e);
-            }
+            var genericType = writer.getGenericParameterTypes()[0];
+            properties.add(new Property(
+                    name,
+                    new PropertyType(descriptor.getPropertyType(), genericType),
+                    writer
+            ));
         }
-        return properties;
+        return properties.toArray(new Property[0]);
     }
 
 

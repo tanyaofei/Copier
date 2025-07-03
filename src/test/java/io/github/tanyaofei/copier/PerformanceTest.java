@@ -13,7 +13,7 @@ public class PerformanceTest {
 
     @BeforeAll
     public static void preTest() {
-        System.setProperty("copier.debugLocation", "./target/generated-test-classes");
+        System.setProperty("copier.debugLocation", "./target/generated-test-classes/" + PerformanceTest.class.getSimpleName());
     }
 
     @Test

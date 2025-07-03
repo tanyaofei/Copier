@@ -209,7 +209,6 @@ public abstract class Copiers {
         return copyList(sources, targetClass, null, lookup);
     }
 
-
     /**
      * Copy a collection of sources
      *

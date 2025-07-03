@@ -17,7 +17,7 @@ public class ToBeanTest extends Assertions {
 
     @BeforeAll
     public static void preTest() {
-        System.setProperty("copier.debugLocation", "./target/generated-test-classes");
+        System.setProperty("copier.debugLocation", "./target/generated-test-classes/" + ToBeanTest.class.getSimpleName());
     }
 
     @Test

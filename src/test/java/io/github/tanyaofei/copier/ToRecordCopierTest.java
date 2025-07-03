@@ -15,7 +15,7 @@ public class ToRecordCopierTest extends Assertions {
 
     @BeforeAll
     public static void preTest() {
-        System.setProperty("copier.debugLocation", "./target/generated-test-classes");
+        System.setProperty("copier.debugLocation", "./target/generated-test-classes/" + ToRecordCopierTest.class.getSimpleName());
     }
 
     @Test

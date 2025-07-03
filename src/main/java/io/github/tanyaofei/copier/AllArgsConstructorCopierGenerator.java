@@ -28,8 +28,8 @@ class AllArgsConstructorCopierGenerator extends CopierGenerator {
         var sourceType = Type.getType(this.source);
         var targetType = Type.getType(this.target);
 
-        var sourceProps = Arrays.stream(Property.forClass(this.source)).collect(Collectors.toMap(Property::name, Function.identity()));
-        var targetProps = Property.forClass(this.target);
+        var sourceProps = Arrays.stream(Property.forClassReaders(this.source)).collect(Collectors.toMap(Property::name, Function.identity()));
+        var targetProps = Property.forClassWriters(this.target);
 
         var source = e.make_local();
         e.load_arg(0);
@@ -56,7 +56,7 @@ class AllArgsConstructorCopierGenerator extends CopierGenerator {
                 if (this.useConverter) {
                     e.load_arg(1);
                     e.load_local(source);
-                    e.invoke_virtual(sourceType, sourceProp.readMethodSignature());
+                    e.invoke_virtual(sourceType, sourceProp.signature());
                     e.box(sourceProp.propertyAsmType());
                     e.push(targetProp.name());
                     e.visitLdcInsn(this.getBoxType(targetProp.propertyAsmType()));
@@ -66,7 +66,7 @@ class AllArgsConstructorCopierGenerator extends CopierGenerator {
                 } else {
                     if (assignable(sourceProp.type(), targetProp.type())) {
                         e.load_local(source);
-                        e.invoke_virtual(sourceType, sourceProp.readMethodSignature());
+                        e.invoke_virtual(sourceType, sourceProp.signature());
                     } else {
                         e.zero_or_null(targetProp.propertyAsmType());
                     }

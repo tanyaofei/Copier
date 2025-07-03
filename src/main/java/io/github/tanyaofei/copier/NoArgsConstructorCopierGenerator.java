@@ -52,8 +52,8 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
         var sourceType = Type.getType(this.source);
         var targetType = Type.getType(this.target);
 
-        var sourceProps = Arrays.stream(Property.forClass(this.source)).collect(Collectors.toMap(Property::name, Function.identity()));
-        var targetProps = Property.forClass(this.target);
+        var sourceProps = Arrays.stream(Property.forClassReaders(this.source)).collect(Collectors.toMap(Property::name, Function.identity()));
+        var targetProps = Property.forClassWriters(this.target);
 
         var source = e.make_local();
         e.load_arg(0);
@@ -85,7 +85,7 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
                     e.load_local(target);
                     e.load_arg(2);
                     e.load_local(source);
-                    e.invoke_virtual(sourceType, sourceProp.readMethodSignature());
+                    e.invoke_virtual(sourceType, sourceProp.signature());
                     e.box(sourceProp.propertyAsmType());
                     e.push(targetProp.name());
                     e.visitLdcInsn(this.getBoxType(targetProp.propertyAsmType()));
@@ -98,12 +98,12 @@ class NoArgsConstructorCopierGenerator extends CopierGenerator {
                     }
                     e.load_local(target);
                     e.load_local(source);
-                    e.invoke_virtual(sourceType, sourceProp.readMethodSignature());
+                    e.invoke_virtual(sourceType, sourceProp.signature());
                 }
             }
 
-            e.invoke_virtual(targetType, targetProp.writeMethodSignature());
-            if (targetProp.writeMethod().getReturnType() != void.class) {
+            e.invoke_virtual(targetType, targetProp.signature());
+            if (targetProp.method().getReturnType() != void.class) {
                 e.pop();
             }
         }
