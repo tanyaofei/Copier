@@ -23,7 +23,7 @@ class AllArgsConstructorCopierGenerator extends CopierGenerator {
 
     @Override
     protected void generateCopyMethod(ClassEmitter ce) {
-        var e = ce.begin_method(Constants.ACC_PUBLIC, Constants.SIGNATURE_COPIER$copy, null);
+        var e = ce.begin_method(Constants.ACC_PUBLIC | Constants.ACC_FINAL, Constants.SIGNATURE_COPIER$copy, null);
 
         var sourceType = Type.getType(this.source);
         var targetType = Type.getType(this.target);

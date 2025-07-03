@@ -72,7 +72,7 @@ abstract class CopierGenerator {
     protected void generateClass(@Nonnull ClassVisitor v, @Nonnull String className) {
         var ce = new ClassEmitter(v);
         ce.begin_class(Constants.V17,
-                       Constants.ACC_PUBLIC,
+                       Constants.ACC_PUBLIC | Constants.ACC_FINAL,
                        className,
                        Constants.TYPE_COPIER,
                        null,
