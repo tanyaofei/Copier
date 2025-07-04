@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * 对象拷贝时使用的额外属性
+ * Extra properties
  *
  * @author tanyaofei
  * @since 2025/6/19
