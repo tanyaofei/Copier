@@ -110,7 +110,7 @@ public class Properties extends HashMap<String, Object> {
     ) {
     }
 
-    public class PropertiesConverter implements Converter {
+    public final class PropertiesConverter implements Converter {
 
         @Nullable
         @Override
