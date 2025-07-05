@@ -56,7 +56,7 @@ public abstract class Copiers {
      *
      * @param source source
      * @param <T>    source type
-     * @return 目标
+     * @return A copy of source object
      */
     public static <T> T clone(@Nullable T source) {
         if (source == null) {
