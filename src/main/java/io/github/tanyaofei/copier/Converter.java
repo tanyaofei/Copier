@@ -46,7 +46,7 @@ public interface Converter {
      * @param value        value from source object
      * @param property     property name
      * @param propertyType property type
-     * @param assignable   if the value from the source object can assignable to the target property
+     * @param assignable   if the value from the source object is assignable to the target property
      * @return converted value
      */
     @Nullable

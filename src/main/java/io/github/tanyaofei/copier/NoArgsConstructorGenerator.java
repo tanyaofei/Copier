@@ -22,7 +22,7 @@ class NoArgsConstructorGenerator extends Generator {
 
     @Override
     protected void generateCopyMethod(@Nonnull ClassEmitter ce) {
-        var e = ce.begin_method(Constants.ACC_PUBLIC | Constants.ACC_FINAL, Constants.SIGNATURE_COPIER$copy, null);
+        var e = ce.begin_method(Constants.ACC_PUBLIC, Constants.SIGNATURE_COPIER$copy, null);
 
         var thisType = ce.getClassType();
         var targetType = Type.getType(this.target);
@@ -47,7 +47,7 @@ class NoArgsConstructorGenerator extends Generator {
     @Override
     @SuppressWarnings("DuplicatedCode")
     protected void generateCopyIntoMethod(@Nonnull ClassEmitter ce) {
-        var e = ce.begin_method(Constants.ACC_PUBLIC | Constants.ACC_FINAL, Constants.SIGNATURE_COPIER$copyInto, null);
+        var e = ce.begin_method(Constants.ACC_PUBLIC, Constants.SIGNATURE_COPIER$copyInto, null);
 
         var sourceType = Type.getType(this.source);
         var targetType = Type.getType(this.target);

@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
  * @author tanyaofei
  * @since 2025/6/19
  **/
-public class Properties implements Map<String, Object>, Converter {
+public final class Properties implements Map<String, Object>, Converter {
 
     private final static Properties EMPTY = new Properties(Collections.emptyMap());
 

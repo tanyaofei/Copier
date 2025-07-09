@@ -14,5 +14,8 @@ interface NamingPolicy {
     @Nonnull
     String getName(@Nonnull String prefix, @Nonnull Object key, @Nonnull Predicate<String> available);
 
+    @Nonnull
+    String getTag();
+
 
 }

@@ -13,7 +13,8 @@ class DefaultNamingPolicy implements NamingPolicy {
     @Nonnull
     @Override
     public String getName(@Nonnull String prefix, @Nonnull Object key, @Nonnull Predicate<String> available) {
-        var base = prefix + "$$GeneratedByCopier" + "$$" + Integer.toHexString(key.hashCode());
+
+        var base = prefix + "$$" + this.getTag() + "$$" + Integer.toHexString(key.hashCode());
 
         int i = 2;
         String attempt = base;
@@ -21,6 +22,12 @@ class DefaultNamingPolicy implements NamingPolicy {
             attempt = attempt + "_" + (i++);
         }
         return attempt;
+    }
+
+    @Nonnull
+    @Override
+    public String getTag() {
+        return "GeneratedByCopier";
     }
 
 }
