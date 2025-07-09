@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 
 /**
  * @author tanyaofei
+ * @see Properties
  * @since 2025/7/1
  **/
 @FunctionalInterface

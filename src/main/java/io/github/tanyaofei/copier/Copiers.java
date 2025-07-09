@@ -56,7 +56,7 @@ public abstract class Copiers {
      *
      * @param source source
      * @param <T>    source type
-     * @return A copy of source object
+     * @return A copy of the source object
      */
     public static <T> T clone(@Nullable T source) {
         if (source == null) {
@@ -79,20 +79,6 @@ public abstract class Copiers {
     }
 
     /**
-     * Copy an object with extract properties, copier will
-     *
-     * @param source      source object
-     * @param targetClass target class
-     * @param properties  extra properties, see {@link Properties#converter()} and {@link  Properties.PropertiesConverter}
-     * @param <U>         target type
-     * @return target object
-     * @see Properties.PropertiesConverter
-     */
-    public static <U> U copy(@Nullable Object source, @Nonnull Class<U> targetClass, @Nonnull Properties properties) {
-        return copy(source, targetClass, properties.converter());
-    }
-
-    /**
      * Copy an object
      *
      * @param source      source object
@@ -100,6 +86,7 @@ public abstract class Copiers {
      * @param converter   converter
      * @param <U>         target type
      * @return target object
+     * @see Properties
      */
     public static <U> U copy(@Nullable Object source, @Nonnull Class<U> targetClass, @Nullable Converter converter) {
         return copy(source, targetClass, converter, getLookup(targetClass));
@@ -114,6 +101,7 @@ public abstract class Copiers {
      * @param lookup      Lookup
      * @param <U>         target type
      * @return target object
+     * @see Properties
      */
     public static <U> U copy(
             @Nullable Object source,

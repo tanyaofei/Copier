@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
  * @author tanyaofei
  * @since 2025/6/19
  **/
-public class Properties implements Map<String, Object> {
+public class Properties implements Map<String, Object>, Converter {
 
     private final static Properties EMPTY = new Properties(Collections.emptyMap());
 
@@ -108,10 +108,6 @@ public class Properties implements Map<String, Object> {
         return new Properties(Collections.unmodifiableMap(delegate));
     }
 
-    public @Nonnull PropertiesConverter converter() {
-        return new PropertiesConverter();
-    }
-
     @Nonnull
     @Override
     public Set<Entry<String, Object>> entrySet() {
@@ -185,6 +181,29 @@ public class Properties implements Map<String, Object> {
         this.delegate.forEach(action);
     }
 
+    @Nullable
+    @Override
+    public Object convert(@Nullable Object value, @Nonnull String property, @Nonnull Class<?> propertyType, boolean assignable) {
+        if (assignable) {
+            return value;
+        }
+        return null;
+    }
+
+    @Override
+    public Object provide(@Nullable Object source, @Nonnull String property, @Nonnull Class<?> propertyType) {
+        var value = this.get(property);
+        if (value == null) {
+            return null;
+        }
+
+        if (propertyType.isAssignableFrom(value.getClass())) {
+            return value;
+        }
+
+        return null;
+    }
+
     public record Property(
 
             @Nonnull
@@ -194,34 +213,12 @@ public class Properties implements Map<String, Object> {
             Object value
 
     ) {
-    }
 
-    public final class PropertiesConverter implements Converter {
-
-        @Nullable
-        @Override
-        public Object convert(@Nullable Object value, @Nonnull String property, @Nonnull Class<?> propertyType, boolean assignable) {
-            if (assignable) {
-                return value;
-            }
-            return null;
-        }
-
-        @Override
-        public Object provide(@Nullable Object source, @Nonnull String property, @Nonnull Class<?> propertyType) {
-            var value = Properties.this.get(property);
-            if (value == null) {
-                return null;
-            }
-
-            if (propertyType.isAssignableFrom(value.getClass())) {
-                return value;
-            }
-
-            return null;
+        @Nonnull
+        public static Property of(@Nonnull String key, @Nullable Object value) {
+            return new Property(key, value);
         }
 
     }
-
 
 }
