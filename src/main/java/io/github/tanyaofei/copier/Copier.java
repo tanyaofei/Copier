@@ -20,7 +20,7 @@ public abstract class Copier {
      * @return target object
      */
     public Object copy(@Nonnull Object source, Converter converter) {
-        throw new UnsupportedOperationException("copy");
+        throw new AbstractMethodError("Method 'copy' is not implemented");
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class Copier {
      * @param converter converter
      */
     public void copyInto(@Nonnull Object source, @Nonnull Object target, Converter converter) {
-        throw new UnsupportedOperationException("copyInto");
+        throw new AbstractMethodError("Method 'copyInto' is not implemented");
     }
 
     /**

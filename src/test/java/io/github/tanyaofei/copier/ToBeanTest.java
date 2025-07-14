@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * @author tanyaofei
@@ -99,6 +100,21 @@ public class ToBeanTest extends Assertions {
         assertEquals(0, b.c);
         assertNull(b.d);
         assertNull(b.e);
+    }
+
+    @Test
+    public void testForEach() {
+        var beans = IntStream.range(0, 10)
+                             .mapToObj(__ -> new Empty())
+                             .toList();
+
+        var bs = Copiers.copyList(beans, B.class, (empty, b) -> {
+            b.setA("a");
+        });
+
+        for (var b : bs) {
+            assertEquals("a", b.a);
+        }
     }
 
     public record Empty() {
