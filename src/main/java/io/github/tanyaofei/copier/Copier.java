@@ -20,7 +20,7 @@ public abstract class Copier {
      * @return target object
      */
     public Object copy(@Nonnull Object source, Converter converter) {
-        throw new AbstractMethodError("Method 'copy' is not implemented");
+        throw new AbstractMethodError("Method 'copy' is not implemented by" + this.getClass().getName());
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class Copier {
      * @param converter converter
      */
     public void copyInto(@Nonnull Object source, @Nonnull Object target, Converter converter) {
-        throw new AbstractMethodError("Method 'copyInto' is not implemented");
+        throw new AbstractMethodError("Method 'copyInto' is not implemented by " + this.getClass().getName());
     }
 
     /**
