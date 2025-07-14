@@ -11,7 +11,8 @@ import java.lang.invoke.MethodHandles;
 abstract class Reflections {
 
 
-    public static Class<?> defineClass(@Nonnull MethodHandles.Lookup lookup, byte[] bytecode) {
+    @Nonnull
+    public static Class<?> defineClass(@Nonnull MethodHandles.Lookup lookup, @Nonnull byte[] bytecode) {
         try {
             return lookup.defineHiddenClass(bytecode, true).lookupClass();
         } catch (IllegalAccessException e) {
