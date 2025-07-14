@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 /**
  * Static copy tool
@@ -179,8 +180,9 @@ public abstract class Copiers {
      * @return a collection of targets
      */
     public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass) {
-        return copyList(sources, targetClass, getLookup(targetClass));
+        return copyList(sources, targetClass, null, null, getLookup(targetClass));
     }
+
 
     /**
      * Copy a collection of sources
@@ -193,7 +195,36 @@ public abstract class Copiers {
      * @return a collection of targets
      */
     public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nonnull MethodHandles.Lookup lookup) {
-        return copyList(sources, targetClass, null, lookup);
+        return copyList(sources, targetClass, null, null, lookup);
+    }
+
+    /**
+     * Copy a collection of sources
+     *
+     * @param sources     collection of sources
+     * @param targetClass target class
+     * @param forEach     operation for each copying
+     * @param <T>         source type
+     * @param <U>         target type
+     * @return a collection of targets
+     */
+    public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable BiConsumer<T, U> forEach) {
+        return copyList(sources, targetClass, null, forEach, getLookup(targetClass));
+    }
+
+    /**
+     * Copy a collection of sources
+     *
+     * @param sources     collection of sources
+     * @param targetClass target class
+     * @param forEach     operation for each copying
+     * @param lookup      Lookup
+     * @param <T>         source type
+     * @param <U>         target type
+     * @return a collection of targets
+     */
+    public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable BiConsumer<T, U> forEach, @Nonnull MethodHandles.Lookup lookup) {
+        return copyList(sources, targetClass, null, forEach, lookup);
     }
 
     /**
@@ -208,6 +239,22 @@ public abstract class Copiers {
      * @return a collection of targets
      */
     public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable Converter converter, @Nonnull MethodHandles.Lookup lookup) {
+        return copyList(sources, targetClass, converter, null, lookup);
+    }
+
+    /**
+     * Copy a collection of sources
+     *
+     * @param sources     collection of sources
+     * @param targetClass target class
+     * @param converter   converter
+     * @param forEach     operation for each copying
+     * @param lookup      Lookup
+     * @param <T>         source type
+     * @param <U>         target type
+     * @return a collection of targets
+     */
+    public static <T, U> List<U> copyList(@Nullable Collection<T> sources, @Nonnull Class<U> targetClass, @Nullable Converter converter, @Nullable BiConsumer<T, U> forEach, @Nonnull MethodHandles.Lookup lookup) {
         if (sources == null) {
             return null;
         }
@@ -226,6 +273,11 @@ public abstract class Copiers {
                 // noinspection unchecked
                 target = (U) copier.copy(source, converter);
             }
+
+            if (forEach != null) {
+                forEach.accept(source, target);
+            }
+
             targets.add(target);
         }
 
