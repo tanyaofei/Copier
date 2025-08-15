@@ -18,8 +18,8 @@ public final class Properties implements Map<String, Object>, Converter {
 
     private final Map<String, Object> delegate;
 
-    private Properties(@Nonnull Map<String, Object> delegate) {
-        this.delegate = delegate;
+    public Properties() {
+        this(new HashMap<>());
     }
 
     @Nonnull
@@ -106,6 +106,10 @@ public final class Properties implements Map<String, Object>, Converter {
             delegate.put(k, v);
         }
         return new Properties(Collections.unmodifiableMap(delegate));
+    }
+
+    private Properties(@Nonnull Map<String, Object> delegate) {
+        this.delegate = delegate;
     }
 
     @Nonnull
