@@ -78,6 +78,11 @@ public final class Properties implements Map<String, Object>, Converter {
     }
 
     @Nonnull
+    public static Property property(@Nonnull String key, @Nullable Object value) {
+        return new Property(key, value);
+    }
+
+    @Nonnull
     public static Properties ofProperties(
             @Nonnull Property... kvs
     ) {
@@ -219,6 +224,7 @@ public final class Properties implements Map<String, Object>, Converter {
     ) {
 
         @Nonnull
+        @Deprecated
         public static Property of(@Nonnull String key, @Nullable Object value) {
             return new Property(key, value);
         }
