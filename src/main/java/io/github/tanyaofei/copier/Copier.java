@@ -20,7 +20,7 @@ public abstract class Copier {
      * @return target object
      */
     public Object copy(@Nonnull Object source, Converter converter) {
-        throw new AbstractMethodError("Method 'copy' is not implemented by" + this.getClass().getName());
+        throw new AbstractMethodError("Method 'copy' is not implemented by " + this.getClass().getName());
     }
 
     /**
@@ -49,8 +49,8 @@ public abstract class Copier {
             if (targetClass.isRecord()) {
                 var gen = new AllArgsConstructorGenerator(sourceClass, targetClass, useConverter, lookup);
                 return gen.create();
-            } else if (hasNoArgsConstructor(targetClass)) {
-                // 非 Record 类型必须提供无参数构造器以满足 "copy() -> copyInto()" 方法
+            } else if (hasPublicNoArgsConstructor(targetClass)) {
+                // non-record class should provide a public no args constructor
                 var gen = new NoArgsConstructorGenerator(sourceClass, targetClass, useConverter, lookup);
                 return gen.create();
             }
@@ -61,7 +61,7 @@ public abstract class Copier {
         throw new CopierException("Can not find a suitable constructor for " + targetClass.getName());
     }
 
-    private static boolean hasNoArgsConstructor(@Nonnull Class<?> clazz) {
+    private static boolean hasPublicNoArgsConstructor(@Nonnull Class<?> clazz) {
         Constructor<?> ctor;
         try {
             ctor = clazz.getDeclaredConstructor();

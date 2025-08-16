@@ -53,7 +53,7 @@ public abstract class Copiers {
     }
 
     /**
-     * Clone a object
+     * Clone an object
      *
      * @param source source
      * @param <T>    source type
