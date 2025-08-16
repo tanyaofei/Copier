@@ -145,9 +145,9 @@ public abstract class Copiers {
             return;
         }
 
-        if (target instanceof Record) {
+        if (target instanceof Record record) {
             //noinspection DataFlowIssue
-            copyInto(source, (Record) target);
+            copyInto(source, record);
         }
 
         var copier = getCopier(source.getClass(), target.getClass(), false, lookup);
