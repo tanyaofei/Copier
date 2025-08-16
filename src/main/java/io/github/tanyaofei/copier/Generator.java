@@ -125,11 +125,11 @@ abstract class Generator {
     public Copier create() {
         var key = new CacheKey(this.source, this.target, this.useConverter);
 
-        var clz = getClassFromCache(key);
+        var clz = getCachedClass(key);
 
         if (clz == null) {
             synchronized (CACHE) {
-                clz = getClassFromCache(key);
+                clz = getCachedClass(key);
                 if (clz == null) {
                     clz = this.generate(key);
                 }
@@ -215,7 +215,7 @@ abstract class Generator {
     }
 
     @Nullable
-    private static Class<?> getClassFromCache(@Nonnull CacheKey key) {
+    private static Class<?> getCachedClass(@Nonnull CacheKey key) {
         var ref = CACHE.get(key);
         if (ref == null) {
             return null;
