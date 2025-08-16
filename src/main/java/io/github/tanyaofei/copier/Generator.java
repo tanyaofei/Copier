@@ -4,15 +4,12 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import net.sf.cglib.core.ClassEmitter;
 import net.sf.cglib.core.EmitUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.ReferenceQueue;
 import java.util.*;
@@ -162,15 +159,15 @@ abstract class Generator {
             this.generateClass(cw, className);
 
             bytecode = cw.toByteArray();
-            if (DEBUG_LOCATION != null && !DEBUG_LOCATION.isEmpty()) {
-                dumpClassFile(bytecode);
+            if (StringUtils.isNotBlank(DEBUG_LOCATION)) {
+                ClassUtils.dumpClassFile(DEBUG_LOCATION, bytecode);
             }
         } catch (Exception e) {
             throw CopierException.wrap("Error generating Copier bytecode", e);
         }
 
         try {
-            return Reflections.defineClass(this.lookup, bytecode);
+            return ClassUtils.defineClass(this.lookup, bytecode, true);
         } catch (Exception e) {
             throw CopierException.wrap("Error loading Copier class", e);
         }
@@ -215,29 +212,6 @@ abstract class Generator {
             case Type.DOUBLE -> Constants.TYPE_DOUBLE;
             default -> type;
         };
-    }
-
-    /**
-     * Dump bytecode to a *.class file
-     *
-     * @param bytecode Java bytecode
-     */
-    private static void dumpClassFile(@Nonnull byte[] bytecode) {
-        var reader = new ClassReader(bytecode);
-        var className = reader.getClassName();
-
-        var filepath = DEBUG_LOCATION + File.separatorChar + className + ".class";
-
-        var folder = new File(filepath).getParentFile();
-        if (!folder.exists() && !folder.mkdirs()) {
-            throw new CopierException("Failed to create debug location folder: " + folder.getPath());
-        }
-
-        try (var out = new BufferedOutputStream(new FileOutputStream(filepath))) {
-            out.write(bytecode);
-        } catch (Exception e) {
-            throw new CopierException("Error dumping bytecode to disk", e);
-        }
     }
 
     @Nullable
