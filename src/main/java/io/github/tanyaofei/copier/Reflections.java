@@ -16,7 +16,7 @@ abstract class Reflections {
         try {
             return lookup.defineHiddenClass(bytecode, true).lookupClass();
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Error defining class", e);
+            throw new CopierException("Error defining class", e);
         }
     }
 
